@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"fmt"
+	"context"
+	"suse-cli-challenge/internal/repository/helm"
 
 	"github.com/spf13/cobra"
 )
@@ -14,7 +15,7 @@ var addCmd = &cobra.Command{
 You can provide the chart location as a GitHub repository URL or a local folder path.
 The CLI will retrieve the chart from the specified location and store its information for future use.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
+		helm.NewHelmRepository().RetrieveURL(context.Background(), "https://github.com/epinio/helm-charts/tree/main/chart/epinio")
 	},
 }
 
