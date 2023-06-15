@@ -10,10 +10,8 @@ The initial proposal is described below.
 
 ### Instructions
 
-Create a Golang CLI that will take as input a list of Helm Charts GitHub repo url or a local folder
-
-path (Ex: https://github.com/epinio/helm-charts/tree/main/chart/epinio or c:/epinio/helm-
-charts/chart) .
+Create a Golang CLI that will take as input a list of Helm Charts GitHub repo url or a local folder path (Ex: https://github.com/epinio/helm-charts/tree/main/chart/epinio or c:/epinio/helm-
+charts/chart).
 
 - The application should behave as described in the Expected Output section below.
 - The application should be using go library clients/packages wherever possible.
@@ -44,6 +42,7 @@ Result - Provides a list of all the container images used in all the charts adde
 ## Assumptions
 
 ### "Must happen inside a pod"
+
 The "Installation of the helm chart must happen inside a Kubernetes pod." requirement was understood as:
 "It should only be possible to run the <bin> install chart command from within Kubernetes pods".
 
@@ -90,15 +89,22 @@ type ChartStorageRepository interface {
 > Tech debt: choosing to use yaml implies in adding new charts to cause the entire data file to be read and written. This could be resolved using other formats such as `jsonlines` or hashing/tree structures.
 
 ### Performance
+
 The performance-related interpretation was taken in two ways.
 1. Code readability is better than performance micro-optimizations
 2. This CLI is not highly sensitive to response time. More costly actions have not yet been optimally optimized.
 
 ### Helm version
+
 The CLI was developed having in mind Helm 3.X.Y versions.
 
 ### Flags
+
 Some optional flags have been added for certain commands, and these will be explained in the walkthrough.
+
+### Windows and Linux
+
+The code was developed aiming to having all functions running in Linux and Windows, but I haven't tested it deeply on windows because I use Linux as my main system.
 
 ### Tech Debts
 
@@ -106,7 +112,6 @@ Some optional flags have been added for certain commands, and these will be expl
 - Optimize chart storage read/write (actually uses the entire file in all operations)
 - Improve error messages and catching
 - Encapsule stdout communication (actually uses `fmt.Print{f,ln}`)
-
 
 ## Directory Structure
 
@@ -322,7 +327,6 @@ Versions:
   URL: https://github.com/epinio/helm-charts/tree/main/chart/application
 ```
 
-
 ### Images
 
 ```bash
@@ -341,7 +345,6 @@ Chart: upgrade-responder
   - longhornio/upgrade-responder:v0.1.5
   - quay.io/kiwigrid/k8s-sidecar:1.22.0
 ```
-
 
 ### Install
 
