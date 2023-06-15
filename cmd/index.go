@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"fmt"
+	yaml_writer "suse-cli-challenge/internal/repository/file_writer/yaml"
+	"suse-cli-challenge/internal/repository/storage/local"
+	"suse-cli-challenge/internal/service"
 
 	"github.com/spf13/cobra"
 )
@@ -11,23 +13,33 @@ var indexCmd = &cobra.Command{
 	Use:   "index",
 	Short: "Generates a Helm repository index file.",
 	Long: `With this command, you can generate a Helm repository index file.
-The CLI will scan the internal list of Helm charts and create an index file that contains metadata about each chart.
-This index file is useful for clients that want to discover and install charts from your repository.`,
+The CLI will scan the internal list of Helm charts and create an index file that contains metadata about each chart.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("index called")
+		storage := local.NewLocalStorageRepository()
+		file := yaml_writer.NewYamlFileWriterRepository()
+		filename, _ := cmd.Flags().GetString("file")
+
+		svc := service.NewIndexService(storage, file)
+		svc.Write(cmd.Context(), filename)
+	},
+}
+
+// printCmd represents the "index print" command
+var printCmd = &cobra.Command{
+	Use:   "print",
+	Short: "Print the local helm index",
+	Long:  `Print the local helm index to shell. This commands do not generate any files.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		lr := local.NewLocalStorageRepository()
+		fw := yaml_writer.NewYamlFileWriterRepository()
+		svc := service.NewIndexService(lr, fw)
+		svc.Print(cmd.Context())
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(indexCmd)
+	indexCmd.AddCommand(printCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// indexCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// indexCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	indexCmd.Flags().String("file", "charts_index.yaml", "Name for the file to write the charts index.")
 }
