@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"path/filepath"
 	"strings"
 	"suse-cli-challenge/internal/repository"
 	"suse-cli-challenge/internal/repository/container_images"
@@ -24,6 +25,7 @@ The CLI will retrieve the chart from the specified location and store its inform
 	Run: func(cmd *cobra.Command, args []string) {
 		// Parse flags
 		upsert, _ := cmd.Flags().GetBool("upsert")
+		chartLocation := args[0]
 
 		// Instantiate the implementations
 
@@ -33,6 +35,7 @@ The CLI will retrieve the chart from the specified location and store its inform
 			file = github.NewGithubFileReaderRepository()
 		} else {
 			file = filesystem.NewFilesystemFileReaderRepository()
+			chartLocation, _ = filepath.Abs(args[0])
 		}
 		helm := helm.NewImplHelmRepository()
 		storage := local.NewLocalStorageRepository()
@@ -42,7 +45,7 @@ The CLI will retrieve the chart from the specified location and store its inform
 		svc := service.NewAddService(file, helm, storage, cimgs)
 
 		// Call action
-		svc.Add(cmd.Context(), args[0], upsert)
+		svc.Add(cmd.Context(), chartLocation, upsert)
 	},
 }
 

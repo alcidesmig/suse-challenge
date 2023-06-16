@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 	"suse-cli-challenge/internal/models"
 	"suse-cli-challenge/internal/repository"
 )
@@ -62,9 +60,6 @@ func (as *AddService) Add(ctx context.Context, chartLocation string, upsert bool
 	chartContent, err := as.getMetadata(ctx, chartLocation)
 	as.handleErrorAndExit(err)
 
-	if !strings.HasPrefix(chartLocation, "http") {
-		chartLocation, _ = filepath.Abs(chartLocation)
-	}
 	chartContent.URL = chartLocation
 	chartContent.PackagedLocalPath = packagedChartLocation
 

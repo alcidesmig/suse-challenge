@@ -31,6 +31,8 @@ func (g *FilesystemFileReaderRepository) RetrieveDirectoryContent(
 ) (string, error) {
 	return path, nil
 }
+
+// NewFilesystemFileReaderRepository creates a new instance of FileReaderRepository for FilesystemFileReaderRepository implementation.
 func NewFilesystemFileReaderRepository() repository.FileReaderRepository {
 	return &FilesystemFileReaderRepository{}
 }

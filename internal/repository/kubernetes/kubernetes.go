@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"reflect"
 	"suse-cli-challenge/internal/repository"
 
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -27,7 +26,6 @@ func (kr *ImplHelmKubernetesRepository) Install(ctx context.Context, chartPath, 
 	if err != nil {
 		return fmt.Errorf("%w: %v", repository.ErrReadingValues, err.Error())
 	}
-	fmt.Printf("%s\n", reflect.TypeOf(values))
 
 	actionConfig, err := kr.init()
 	if err != nil {
